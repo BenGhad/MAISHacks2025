@@ -47,11 +47,12 @@ def process_file(file_path):
 
 
 
+# Define X (features) and Y (target)
+processed_df = process_file(file_path)
+X = processed_df[['Return', 'MA5', 'MA20', 'Volume_Change']]
+Y = processed_df['Target']
 
-pipe = Pipeline{
+mod.fit(X,y)
+mod.predict(X_test)
 
 
-
-}
-
-pred = pipe.fit(X,y).predict(X_test)

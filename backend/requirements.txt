@@ -1,0 +1,5 @@
+PyYAML
+pandas
+fastapi
+uvicorn
+pydantic

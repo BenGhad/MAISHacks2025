@@ -1,2 +1,5 @@
-PyYAML~=6.0.2
-pandas~=2.2.3
+PyYAML
+pandas
+fastapi
+uvicorn
+pydantic

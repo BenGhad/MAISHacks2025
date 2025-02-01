@@ -1,0 +1,153 @@
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "AMZ"
+}
+
+<> 2025-02-01T174730.200.json
+
+###
+
+GET http://localhost:8000/wallet
+Accept: application/json
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-02-01T174320.200.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "AMZ"
+}
+
+<> 2025-02-01T174318.200.json
+
+###
+
+GET http://localhost:8000/wallet
+Accept: application/json
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+<> 2025-02-01T174305.200.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "AMZ"
+}
+
+<> 2025-02-01T174021.200.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "AMZ"
+}
+
+<> 2025-02-01T174016.200.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "AMZ"
+}
+
+<> 2025-02-01T173656.422.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "NKE"
+}
+
+<> 2025-02-01T173525.422.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "NKE"
+}
+
+<> 2025-02-01T173242.422.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "NKE"
+}
+
+<> 2025-02-01T172834.404.json
+
+###
+
+POST http://localhost:8000/wallet
+Content-Type: application/json
+Content-Length: 19
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+{
+  "name": "NKE"
+}
+
+<> 2025-02-01T172500.404.json
+
+###
+

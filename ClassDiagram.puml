@@ -1,0 +1,54 @@
+@startuml
+' Define Classes
+
+class ConfigManager {
+  +loadConfig(file: String): Config
+  +validateConfig(config: Config): Boolean
+}
+
+class FMPApiClient {
+  -apiKey: String
+  +fetchData(): RawData
+}
+
+class DataPreprocessor {
+  +cleanData(rawData: RawData): CleanData
+  +normalizeData(cleanData: CleanData): ProcessedData
+}
+
+class FeatureEngineer {
+  +extractFeatures(data: ProcessedData): Features
+  +generateIndicators(data: ProcessedData): Indicators
+}
+
+class ModelTrainer {
+  +trainModel(features: Features, labels: Labels): Model
+  +saveModel(model: Model, filepath: String): void
+}
+
+class Predictor {
+  +loadModel(filepath: String): Model
+  +predict(features: Features): Prediction
+}
+
+class TradeExecutor {
+  +executeTrade(decision: TradeDecision): void
+  +simulateTrade(decision: TradeDecision): void
+}
+
+class PortfolioManager {
+  +updatePortfolio(trade: Trade): void
+  +monitorRisk(): RiskReport
+}
+
+' Relationships and Flow
+
+ConfigManager --> FMPApiClient : "provides config"
+FMPApiClient --> DataPreprocessor : "returns raw data"
+DataPreprocessor --> FeatureEngineer : "outputs processed data"
+FeatureEngineer --> ModelTrainer : "supplies features"
+ModelTrainer --> Predictor : "saves/loads model"
+Predictor --> TradeExecutor : "outputs predictions"
+TradeExecutor --> PortfolioManager : "updates portfolio"
+
+@enduml

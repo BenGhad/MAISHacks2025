@@ -5,9 +5,8 @@ import json
 import datetime
 import pandas as pd
 
-from api.utils import config_manager
-from api import fmp_api
-
+from backend.utils import config_manager
+from backend import fmp_api
 
 
 def ensure_directory(path):

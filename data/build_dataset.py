@@ -7,7 +7,7 @@ import pandas as pd
 
 from api.utils import config_manager
 from api import fmp_api
-from api.preprocessing import data_preprocessor
+
 
 
 def ensure_directory(path):
@@ -69,7 +69,7 @@ def main():
     # Preprocess the raw data (assuming the function returns a Pandas DataFrame)
     try:
         print("Preprocessing raw data...")
-        df_processed = data_preprocessor.preprocess_data(raw_data)
+        df_processed = None # data_preprocessor.preprocess_data(raw_data)
     except Exception as e:
         print(f"Error during data preprocessing: {e}")
         return

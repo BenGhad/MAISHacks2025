@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 
+
 def process_file(file_path):
     """
     Reads a CSV file and creates features and a target.
@@ -43,3 +44,14 @@ def process_file(file_path):
     # Remove rows with NaN values (from rolling calculations and shifting)
     df.dropna(inplace=True)
     return df
+
+
+
+
+pipe = Pipeline{
+
+
+
+}
+
+pred = pipe.fit(X,y).predict(X_test)

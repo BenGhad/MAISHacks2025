@@ -46,6 +46,7 @@ def process_file(file_path):
     return df
 
 
+mod = RandomForestClassifier()
 
 # Define X (features) and Y (target)
 processed_df = process_file(file_path)

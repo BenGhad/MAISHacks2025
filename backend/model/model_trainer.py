@@ -22,6 +22,7 @@ def process_dataframe(df):
 
     # Compute daily return from Close prices
     df['Return'] = df['Close'].pct_change(fill_method=None)
+    df['Return'].fillna(0, inplace=True) #0% profit on day 0
 
     # Compute moving averages (5-day and 20-day)
     df['MA5'] = df['Close'].rolling(window=5).mean()
@@ -29,11 +30,13 @@ def process_dataframe(df):
 
     # Compute volume change
     df['Volume_Change'] = df['Volume'].pct_change(fill_method=None)
+    df['Volume_Change'].fillna(0, inplace=True)
 
     # Create next-day return and target
     df['Next_Return'] = df['Return'].shift(-1)
-    # Skibidi Classification
+    df['Next_Return'].fillna(0, inplace=True)
 
+    # Skibidi Classification
     def label_target(r):
         if r > 0.01:
             return 1

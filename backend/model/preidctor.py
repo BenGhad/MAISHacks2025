@@ -14,7 +14,7 @@ model = joblib.load(model_path)
 
 
 def predictNext(ticker):
-    df = yf.download(ticker, period="1mo")
+    df = yf.download(ticker, period="3mo")
     if (df.empty):
         return f"{ticker}: No data available"
     df.reset_index(inplace=True)
@@ -132,7 +132,7 @@ def start(startDate, endDate, tickers):
 
             # If we already hold shares of this ticker...
             if portfolio[ticker] > 0:
-                if prediction == 1:
+                if prediction >= 0:
                     # Buy more shares proportional to daily percent gain
                     # We need the daily percent gain from the last close to today's close:
                     if prev_close is not None and prev_close > 0:
@@ -146,7 +146,7 @@ def start(startDate, endDate, tickers):
                             # Increase position
                             portfolio[ticker] += shares_to_buy
                 else:
-                    # prediction == 0 or -1, so sell everything
+                    # prediction is bad, sell everything
                     shares_held = portfolio[ticker]
                     proceeds = shares_held * current_close
                     # Add to Profit
@@ -156,7 +156,7 @@ def start(startDate, endDate, tickers):
 
             # If we are NOT holding shares
             else:
-                if prediction == 1:
+                if prediction >= 0:
                     # Buy $1000 worth
                     shares_to_buy = 1000.0 / current_close
                     # Deduct the cost from Profit (i.e., "cash")

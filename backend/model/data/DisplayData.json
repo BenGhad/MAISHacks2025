@@ -40,6 +40,13 @@
         "Start": "01/01/2024",
         "End:": "01/01/2025",
         "PCT_Profit": 100.77
+    },
+    {
+        "Title": "SSSB tries it's hand against an ETF",
+        "Stocks": "AAPL MSFT AMZN GOOGL TSLA NVDA META UNH JPM JNJ V PG MA HD DIS CRM ADBE CMCSA PFE",
+        "Start": "01/01/2023",
+        "End": "01/01/2025",
+        "PCT_Profit": 102.31
     }
 
 ]

@@ -29,7 +29,7 @@ class UserChoice(BaseModel):
 app=FastAPI()
 ##Base origins/pts to call any end points on the server
 origins ={
-    "http://localhost:3000"
+    "http://localhost:5173"
 }
 ##Prevent unauthorized access to our API
 app.add_middleware(

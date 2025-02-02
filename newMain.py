@@ -163,7 +163,7 @@ HTML_content = """<!DOCTYPE html>
 
   <main>
     <div class="content-box">
-      <!-- Left Column: Inputs -->
+      <!-- Left Column: Inputs --> 
       <div class="input-section">
         <label for="tickersInput">Enter Stocks (space-separated):</label>
         <input type="text" id="tickersInput" placeholder="e.g. AAPL MSFT GOOG" />

@@ -2,9 +2,17 @@ import joblib
 import yfinance as yf
 import model_trainer as gyatt
 import pandas as pd
+from datetime import date
+from backend.model.model_trainer import process_dataframe
 
 # Load the pre-trained model
 model = joblib.load('model.joblib')
+
+
+def predictNext(ticker):
+     current_date = date.today().strftime('%Y-%m-%d')
+     Ydf = process_dataframe(yf.download(ticker, current_date, current_date))
+     model.predict(Ydf)
 
 
 

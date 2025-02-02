@@ -229,7 +229,8 @@ async def get_dashboard(request: Request):
     return HTMLResponse(content=html_content, status_code=200)
 
 
-
+@app.get("/History",response_class=HTMLResponse)
+async def get_value()
 
 
 

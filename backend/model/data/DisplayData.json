@@ -1,0 +1,45 @@
+[
+    {
+        "Title": "Generic portfolio #1 23-24",
+        "Stocks": "AAPL MSFT GOOGL AMZN TSLA NVDA META JPM V VZ NFLX DIS PYPL PEP KO INTC AMD TSM CSCO WMT XOM JNJ UNH PG NKE ABBV MRK BA GE",
+        "Start": "01/01/2023",
+        "End": "01/01/2024",
+        "PCT_Profit": 102.13
+    },
+    {
+        "Title": "Generic portfolio #1 24-25",
+        "Stocks": "AAPL MSFT GOOGL AMZN TSLA NVDA META JPM V VZ NFLX DIS PYPL PEP KO INTC AMD TSM CSCO WMT XOM JNJ UNH PG NKE ABBV MRK BA GE",
+        "Start": "01/01/2024",
+        "End": "01/01/2025",
+        "PCT_Profit": 101.21
+    },
+    {
+        "Title": "SSSB hilariously misses the NVDA Run but still does ok I guess",
+        "Stocks": "NVDA",
+        "Start": "01/01/2024",
+        "End": "01/01/2025",
+        "PCT_Profit": 102.03
+    },
+    {
+        "Title": "Skibidi goes to the moon and actually outperforms the S&P",
+        "Stocks": "ASTS",
+        "Start": "04/04/2024",
+        "End": "12/12/2024",
+        "PCT_Profit": 106.5
+    },
+    {
+        "Title": "Metagaming",
+        "Stocks": "META EA TTWO NVDA RBLX GME",
+        "Start": "01/01/2024",
+        "End": "01/01/2025",
+        "PCT_Profit": 102.56
+    },
+    {
+        "Title":"All in on the bell pepper",
+        "Stocks": "BCE NVDA INTC WBA F TSLA LCID AAPL PLTR SOFI JBLU JNJ NU VALE SOUN PFE PSLV IP SMCI RIOT NIO AMD IQ BABA CMCSA MARA RIG T ACHR AVGO AGNC AAL AMZN WBD PCG",
+        "Start": "01/01/2024",
+        "End:": "01/01/2025",
+        "PCT_Profit": 100.77
+    }
+
+]

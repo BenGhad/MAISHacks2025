@@ -86,7 +86,8 @@ def start(startDate, endDate, tickers):
     Returns final Profit.
     """
 
-    Profit = 0
+    expenses = 0.0 # Total money spent(Assume profit cannot be traded for simplicity)
+    Profit = 0.0 # Running cash balance
     portfolio = {}
 
     # Go through each ticker individually
@@ -141,8 +142,7 @@ def start(startDate, endDate, tickers):
                             # Buy that % more shares
                             shares_to_buy = portfolio[ticker] * daily_gain_pct
                             cost = shares_to_buy * current_close
-                            # Deduct from Profit (i.e., "cash")
-                            Profit -= cost
+                            expenses += cost
                             # Increase position
                             portfolio[ticker] += shares_to_buy
                 else:
@@ -158,9 +158,8 @@ def start(startDate, endDate, tickers):
             else:
                 if prediction >= 0:
                     # Buy $1000 worth
-                    shares_to_buy = 1000.0 / current_close
-                    # Deduct the cost from Profit (i.e., "cash")
-                    Profit -= 1000.0
+                    shares_to_buy = 1000.0 / current_close # In case we refactor for growth
+                    expenses += 1000.0
                     portfolio[ticker] = shares_to_buy
                 # If prediction == 0 or -1, do nothing
                 else:
@@ -177,8 +176,14 @@ def start(startDate, endDate, tickers):
             Profit += proceeds
             portfolio[ticker] = 0.0
 
-    print(f"Final Profit after simulation: {Profit:.2f}")
-    return round(Profit, 2)
+    print(f"Final Cash Balance: {Profit:.2f}")
+    print(f"Total Expenses (Money Invested): {expenses:.2f}")
+    if(expenses != 0):
+        pctProfit = (Profit / expenses) * 100
+        print(f"Percent Profit: {pctProfit:.2f}%")
+        return "Profit: " + str(round(pctProfit, 2)) + " -> " + str(round(pctProfit, 2)) + "% profit"
+    else:
+        return "No trades were made "
 
 
 # Example usage:

@@ -5,7 +5,7 @@ import json
 import datetime
 import pandas as pd
 
-from backend.utils import config_manager
+# from backend.utils import config_manager
 from backend import fmp_api
 
 

@@ -21,7 +21,7 @@ def start(startDate: str, endDate: str, tickers: list) -> int:
 def next_prediction(tickers: list) -> list:
     result = ""
     for ticker in tickers:
-        result += skibidi.predictNext(ticker)
+        result += skibidi.predictNext(ticker) + " "
     return result
 
 
@@ -308,11 +308,7 @@ async def start_endpoint(request: Request):
     tickers = body["tickers"].split() if "tickers" in body else []
     start_date = body.get("startDate", "")
     end_date = body.get("endDate", "")
-    try:
-        result = start(start_date, end_date, tickers)
-        return JSONResponse(content={"result": result})
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=400)
+    return JSONResponse(content={"result": start(start_date, end_date, tickers)})
 
 
 @app.post("/next")

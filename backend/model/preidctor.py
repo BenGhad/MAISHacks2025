@@ -2,7 +2,6 @@ import os
 import joblib
 import yfinance as yf
 import pandas as pd
-from datetime import date
 import matplotlib.pyplot as plt
 import backend.model.model_trainer as gyatt
 from backend.model.model_trainer import process_dataframe
@@ -11,7 +10,6 @@ from backend.model.model_trainer import process_dataframe
 current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, 'model.joblib')
 
-# Load the pre-trained model using the absolute path.
 model = joblib.load(model_path)
 
 
@@ -62,7 +60,7 @@ def plotGraph(ticker):
 
 
 def predictAny(ret, ma5, ma20, vol_change):
-    # Create a DataFrame with the same feature names used during training.
+    # Create a DataFrame
     features = pd.DataFrame([[ret, ma5, ma20, vol_change]],
                             columns=['Return', 'MA5', 'MA20', 'Volume_Change'])
     prediction = model.predict(features)
@@ -73,7 +71,7 @@ def start(startDate, endDate, tickers):
     """
     Simulate trades for each ticker from startDate to endDate using daily data.
 
-    Rules:
+    Rules/Alg:
       1) If already holding a ticker:
          a) If model prediction is +1 ("positive"), buy more shares proportional
             to the daily percent gain.
@@ -85,7 +83,6 @@ def start(startDate, endDate, tickers):
          b) If prediction is -1 or 0, do nothing.
 
     At the end of the period, sell any remaining shares (settle all positions).
-
     Returns final Profit.
     """
 

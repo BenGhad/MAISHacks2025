@@ -68,17 +68,14 @@ HTML_content = """<!DOCTYPE html>
       color: #fff;
       font-size: 2rem;
     }
-
-    /* Main Content Layout */
     main {
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 40px 20px;
-      min-height: calc(100% - 80px); /* Adjust based on header height */
+      min-height: calc(100% - 80px); 
     }
 
-    /* Content Box (Card) */
     .content-box {
       background: #fff;
       max-width: 900px;
@@ -91,7 +88,6 @@ HTML_content = """<!DOCTYPE html>
       gap: 20px;
     }
 
-    /* Left Column for Inputs */
     .input-section {
       flex: 1;
       min-width: 280px;
@@ -113,7 +109,6 @@ HTML_content = """<!DOCTYPE html>
       margin-bottom: 15px;
     }
 
-    /* Right Column for Actions */
     .action-section {
       flex: 1;
       min-width: 280px;
@@ -162,13 +157,10 @@ HTML_content = """<!DOCTYPE html>
 <body>
   <!-- Particle Background -->
   <div id="particles-js"></div>
-
-  <!-- Header -->
   <header>
     <h1>Stock Predictor</h1>
   </header>
 
-  <!-- Main Content -->
   <main>
     <div class="content-box">
       <!-- Left Column: Inputs -->
@@ -183,7 +175,6 @@ HTML_content = """<!DOCTYPE html>
         <input type="date" id="endDateInput" />
       </div>
 
-      <!-- Right Column: Action Buttons & Descriptions -->
       <div class="action-section">
         <!-- Action Block 1: Daily Prediction -->
         <div class="action-block">
@@ -208,7 +199,7 @@ HTML_content = """<!DOCTYPE html>
     </div>
   </main>
 
-  <!-- JavaScript for Actions -->
+  <!-- Extra JS -->
   <script>
   async function handleDailyPrediction() {
     const tickers = document.getElementById("tickersInput").value;
@@ -253,7 +244,7 @@ HTML_content = """<!DOCTYPE html>
   <!-- Load particles.js library from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
   
-  <!-- Initialize particles.js with configuration -->
+  <!-- Initialize particles.js -->
   <script>
     particlesJS("particles-js", {
       "particles": {
@@ -298,7 +289,6 @@ HTML_content = """<!DOCTYPE html>
   </script>
 </body>
 </html>
-
 
 """
 

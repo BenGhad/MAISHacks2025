@@ -308,7 +308,11 @@ async def start_endpoint(request: Request):
     tickers = body["tickers"].split() if "tickers" in body else []
     start_date = body.get("startDate", "")
     end_date = body.get("endDate", "")
-    return JSONResponse(content={"result": start(start_date, end_date, tickers)})
+    try:
+        result = start(start_date, end_date, tickers)
+        return JSONResponse(content={"result": result})
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
 
 
 @app.post("/next")

@@ -2,10 +2,37 @@ import joblib
 import yfinance as yf
 import model_trainer as gyatt
 import pandas as pd
+from datetime import date
+from backend.model.model_trainer import process_dataframe
+import matplotlib.pyplot as plt
+
 
 # Load the pre-trained model
 model = joblib.load('model.joblib')
 
+
+def predictNext(ticker):
+     current_date = date.today().strftime('%Y-%m-%d')
+     Ydf = process_dataframe(yf.download(ticker, current_date, current_date))
+     model.predict(Ydf)
+
+def plotGraph(ticker):
+    ticker_data = yf.Ticker(ticker)
+    historical_data = ticker_data.history(period="1y")
+
+    # Plot the closing prices
+    plt.figure(figsize=(10, 6))
+    plt.plot(historical_data.index, historical_data['Close'], label=f'{ticker} Close Price', color='blue')
+
+    # Add title and labels
+    plt.title(f'{ticker} Stock Price (Last 1 Year)')
+    plt.xlabel('Date')
+    plt.ylabel('Price (USD)')
+    plt.legend()
+
+    # Show the plot
+    plt.grid()
+    plt.show()
 
 
 def predictAny(ret, ma5, ma20, vol_change):

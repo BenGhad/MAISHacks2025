@@ -4,4 +4,4 @@ fastapi
 uvicorn
 pydantic
 sklearn
-yfinance
+matplotlib

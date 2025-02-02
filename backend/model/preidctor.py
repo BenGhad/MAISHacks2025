@@ -5,6 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import backend.model.model_trainer as gyatt
 from backend.model.model_trainer import process_dataframe
+import io
+import base64
 
 # Load the pre-trained model
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -53,10 +55,14 @@ def plotGraph(ticker):
     plt.xlabel('Date')
     plt.ylabel('Price (USD)')
     plt.legend()
-
-    # Show the plot
     plt.grid()
-    plt.show()
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    img = base64.b64encode(buf.read()).decode('utf-8')
+    plt.close()
+    return img
 
 
 def predictAny(ret, ma5, ma20, vol_change):

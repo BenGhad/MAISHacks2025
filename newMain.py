@@ -195,6 +195,17 @@ HTML_content = """<!DOCTYPE html>
           </p>
           <div id="answerBox" class="result-box">Answer goes here...</div>
         </div>
+        <!-- Action Block 3: 1-Year Price Plot -->
+        <div class="action-block">
+            <button onclick="handlePlot()">Plot 1-Year History</button>
+            <p class="action-desc">
+            This action retrieves and plots the past year's closing prices for the first ticker you entered.
+            </p>
+         <div class="result-box">
+        <img id="plotBox" style="max-width:100%;" alt="Plot will appear here" />
+        </div>
+        </div>
+
       </div>
     </div>
   </main>
@@ -238,9 +249,42 @@ HTML_content = """<!DOCTYPE html>
       document.getElementById("answerBox").innerText = "Error: " + error;
     }
   }
+  
+   async function handlePlot() {
+    const tickerString = document.getElementById("tickersInput").value.trim();
+
+    // Validate input
+    if (!tickerString) {
+      alert("No Ticker Specified");
+      return;
+    }
+
+    // Just take the first ticker if multiple are provided
+    const ticker = tickerString.split(/\s+/)[0];
+
+    try {
+      const response = await fetch("/plot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticker: ticker })
+      });
+
+      // Parse the response
+      const data = await response.json();
+      
+      if (data.image) {
+        document.getElementById("plotBox").src = 'data:image/png;base64,' + data.image;
+      }
+      else if (data.error) {
+        alert("Error: " + data.error);
+        document.getElementById("plotBox").src = "";
+      }
+    } catch (error) {
+      alert("Error: " + error);
+      document.getElementById("plotBox").src = "";
+    }
+  }
 </script>
-
-
   <!-- Load particles.js library from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
   
@@ -325,6 +369,15 @@ async def next_endpoint(request: Request):
         return JSONResponse(content={"result": result})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
+
+
+@app.post("/plot")
+async def plot_endpoint(request: Request):
+    body = await request.json()
+    ticker = body.get("ticker", "").strip()
+    if not ticker:
+        return JSONResponse(content={"error": "No ticker specified"}, status_code=400)
+    return JSONResponse(content={"image": skibidi.plotGraph(ticker)})
 
 
 # ----------------------------

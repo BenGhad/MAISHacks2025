@@ -2,19 +2,22 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
 import joblib
+import yfinance as yf
 
-
-def process_file(file_path):
+def process_dataframe(df):
     """
-    Reads a CSV file and creates features and a target.
-      - Daily percent return
-      - 5-day and 20-day moving averages
-      - Daily percent change in volume
-      - A simple target: if tomorrow's return > 1% => 1 (buy), if < -1% => -1 (sell), else 0 (hold)
+    processes dataframe with:
+    Date Close Volume,
+    then creates
+      - Return
+      - MA5, MA20
+      - Volume_Change
+      - Next_Return
+      - Target
     """
-    # Read CSV and parse dates (adjust dayfirst if needed)
-    df = pd.read_csv(file_path, parse_dates=['Date'], dayfirst=False)
+    df = df.copy()
     df.sort_values('Date', inplace=True)
 
     # Compute daily return from Close prices
@@ -27,47 +30,108 @@ def process_file(file_path):
     # Compute volume change
     df['Volume_Change'] = df['Volume'].pct_change(fill_method=None)
 
-    # Create target based on next day's return (shift -1)
+    # Create next-day return and target
     df['Next_Return'] = df['Return'].shift(-1)
+    # Skibidi Classification
 
     def label_target(r):
-        if r > 0.01:  # if next day gain > 1%
+        if r > 0.01:
             return 1
-        elif r < -0.01:  # if next day loss > 1%
+        elif r < -0.01:
             return -1
         else:
             return 0
 
     df['Target'] = df['Next_Return'].apply(label_target)
-
-    # Replace infinite values with NaN to avoid issues in model training
+    # accounting for the fact that kaggle has the hygiene of a CS major
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
-
-    # Remove rows with NaN values (from rolling calculations, shifting, or replacement)
     df.dropna(inplace=True)
+
     return df
 
+def process_file(file_path):
+    """
+      reads CSV -> dataframe. PROCESS!!!!
+    """
+    df = pd.read_csv(file_path, parse_dates=['Date'], dayfirst=False)
+    processed_df = process_dataframe(df)
+    return processed_df
 
-# Initialize the model
-mod = RandomForestClassifier()
 
-# Path to the folder containing CSV files
-raw_folder = "data/raw"
+# ---------------------
+# 1) COMBINE ALL CSVs
+# ---------------------
+def combine_data(raw_folder):
+    """
+    Reads all CSV files in the folder, processes them, and concatenates into a single DataFrame.
+    """
+    all_dfs = []
 
-# List all CSV files in the folder
-csv_files = os.listdir(raw_folder)
+    for file in os.listdir(raw_folder):
+        if file.lower().endswith(".csv"):
+            file_path = os.path.join(raw_folder, file)
+            processed_df = process_file(file_path)
+            all_dfs.append(processed_df)
 
-# Loop through each CSV file and process it
-for file in csv_files:
-    file_path = os.path.join(raw_folder, file)
-    processed_df = process_file(file_path)
+    # Concatenate all processed data
+    combined_df = pd.concat(all_dfs, ignore_index=True)
 
-    # Define X (features) and Y (target)
-    X = processed_df[['Return', 'MA5', 'MA20', 'Volume_Change']]
-    Y = processed_df['Target']
+    # Sort by date after concatenation
+    combined_df.sort_values("Date", inplace=True)
+    return combined_df
 
-    # Fit the model on the data from the current CSV file
-    mod.fit(X, Y)
 
-# Save the model to disk
-joblib.dump(mod, 'model.joblib')
+
+
+# ----------------------
+# 2) MAIN SCRIPT
+# ----------------------
+if __name__ == "__main__":
+
+    #Training Phase:
+
+    raw_folder = "data/raw"
+    # Combine all CSV data into one DataFrame
+    train_df = combine_data(raw_folder)
+
+    # Prepare training data
+    X_train = train_df[['Return', 'MA5', 'MA20', 'Volume_Change']]
+    y_train = train_df['Target']
+    # Fit the random forest on the training set
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Yfinance testing
+    test_tickers = ["AAPL", "MSFT", "AMZN", "GOOG", "NVDA",
+                    "JPM", "JNJ", "WMT", "XOM", "BAC"]
+    results = {}
+    start_date = "2024-01-01"
+    end_date = "2025-01-01"
+
+    for ticker in test_tickers:
+        #Download da process
+        Ydf = yf.download(ticker, start=start_date, end=end_date)
+        Ydf.reset_index(inplace=True) # Make date a collumn
+        pdf = process_dataframe(Ydf)
+
+        #Edge case(no data):
+        if pdf.empty:
+            print(f"No data after processing for {ticker} in the given date range.")
+            continue
+
+        #X & Y test:
+        X_test = pdf[['Return', 'MA5', 'MA20', 'Volume_Change']]
+        y_test = pdf['Target']
+        # If X_test is empty, we cannot call predict.
+        if len(X_test) == 0:
+            print(f"{ticker} has 0 valid rows after feature engineering.")
+            continue
+
+        y_predict = model.predict(X_test)
+        acc = accuracy_score(y_test, y_predict)
+        print(f"{ticker} Test Accuracy: {acc:.4f}")
+        print(classification_report(y_test, y_predict, digits=4))
+
+    # Save the model
+    joblib.dump(model, "model.joblib")
+    print("Model saved to model.joblib")

@@ -1,132 +1,159 @@
-# main.py
-from fastapi import FastAPI, Form
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 import uvicorn
+
+# ----------------------------
+# Import your trainer/predictor
+# ----------------------------
 import backend.model.model_trainer as model_trainer
 import backend.model.preidctor as skibidi
 
-
 app = FastAPI()
 
-
-
+# ----------------------------
+# Wrapper functions
+# ----------------------------
 def start(startDate: str, endDate: str, tickers: list) -> int:
-    return skibidi.start(startDate, endDate, list)
+    return skibidi.start(startDate, endDate, tickers)
 
-def next(tickers: list) -> list:
-    buys = []
-    for ticker in tickers:
-        buys.append(skibidi.predictNext(ticker))
-    return buys
+def next_prediction(tickers: list) -> list:
+    return [skibidi.predictNext(ticker) for ticker in tickers]
 
-
-
-
-@app.get("/", response_class=HTMLResponse)
-async def index():
-    # Initial page with an empty output box.
-    html_content = html_content = """
+# ----------------------------
+# HTML content (pure HTML/CSS/JS)
+# ----------------------------
+HTML_content = """
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
     <title>Stock Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label, input, button {
+            display: block;
+            margin: 10px 0px;
+        }
+        #outputBox, #answerBox {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            min-height: 40px;
+            padding: 10px;
+        }
+        button {
+            cursor: pointer;
+            padding: 8px 16px;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h1>Stock Predictor</h1>
-    
-    <div>
-        <label for="tickersInput">Tickers (space-separated):</label><br>
-        <input type="text" id="tickersInput" placeholder="AAPL TSLA MSFT" style="width:300px;">
-    </div>
-    <br>
-    
-    <div>
-        <label for="startDate">Start Date:</label><br>
-        <input type="date" id="startDate" />
-    </div>
-    <br>
 
-    <div>
-        <label for="endDate">End Date:</label><br>
-        <input type="date" id="endDate" />
-    </div>
-    <br>
+    <label for="tickersInput">Enter Stocks (space-separated):</label>
+    <input type="text" id="tickersInput" placeholder="e.g. AAPL MSFT GOOG" />
 
-    <button onclick="callStart()">Call Start</button>
-    <button onclick="callNext()">Call Next</button>
+    <label for="startDateInput">Start Date:</label>
+    <input type="date" id="startDateInput" />
 
-    <hr>
+    <label for="endDateInput">End Date:</label>
+    <input type="date" id="endDateInput" />
 
-    <!-- Output box -->
-    <div id="outputBox" style="border:1px solid #ccc; padding:10px; min-height:50px;">
-        <!-- Results will appear here -->
-    </div>
+    <button onclick="handleStart()">Start</button>
+    <div id="outputBox">Output goes here...</div>
 
-    <!-- JavaScript to handle button clicks and fetch calls -->
-    <script>
-        async function callStart() {
-            const tickers = document.getElementById("tickersInput").value;
-            const startDate = document.getElementById("startDate").value;
-            const endDate = document.getElementById("endDate").value;
+    <button onclick="handleNext()">Next</button>
+    <div id="answerBox">Answer goes here...</div>
+</div>
 
-            try {
-                const response = await fetch("/start", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ 
-                        tickers: tickers,
-                        startDate: startDate,
-                        endDate: endDate
-                    })
-                });
+<script>
+    async function handleStart() {
+        const tickers = document.getElementById("tickersInput").value;
+        const startDate = document.getElementById("startDateInput").value;
+        const endDate = document.getElementById("endDateInput").value;
 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                document.getElementById("outputBox").innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                console.error(error);
-                document.getElementById("outputBox").innerText = "Error: " + error.message;
-            }
+        try {
+            const response = await fetch("/start", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    tickers: tickers,
+                    startDate: startDate,
+                    endDate: endDate
+                })
+            });
+            const data = await response.json();
+            document.getElementById("outputBox").innerText = data.result;
+        } catch (error) {
+            document.getElementById("outputBox").innerText = "Error: " + error;
         }
+    }
 
-        async function callNext() {
-            const tickers = document.getElementById("tickersInput").value;
+    async function handleNext() {
+        const tickers = document.getElementById("tickersInput").value;
 
-            try {
-                const response = await fetch("/next", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        tickers: tickers
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                document.getElementById("outputBox").innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                console.error(error);
-                document.getElementById("outputBox").innerText = "Error: " + error.message;
+        try {
+            const response = await fetch("/next", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({tickers: tickers})
+            });
+            const data = await response.json();
+            // If it's a list, join the results in some display-friendly way
+            if (Array.isArray(data.result)) {
+                document.getElementById("answerBox").innerText = data.result.join(", ");
+            } else {
+                document.getElementById("answerBox").innerText = data.result;
             }
+        } catch (error) {
+            document.getElementById("answerBox").innerText = "Error: " + error;
         }
-    </script>
+    }
+</script>
 </body>
 </html>
-
 """
 
+# ----------------------------
+# Routes
+# ----------------------------
+@app.get("/", response_class=HTMLResponse)
+def serve_homepage():
+    print("Serving homepage...")
+    return HTML_content
 
+@app.post("/start")
+async def start_endpoint(request: Request):
+    body = await request.json()
+    # Split space-separated tickers
+    tickers = body["tickers"].split() if "tickers" in body else []
+    start_date = body.get("startDate", "")
+    end_date = body.get("endDate", "")
+    try:
+        result = start(start_date, end_date, tickers)
+        return JSONResponse(content={"result": result})
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
+@app.post("/next")
+async def next_endpoint(request: Request):
+    body = await request.json()
+    # Split space-separated tickers
+    tickers = body["tickers"].split() if "tickers" in body else []
+    try:
+        result = next_prediction(tickers)
+        return JSONResponse(content={"result": result})
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+
+# ----------------------------
+# Run the server
+# ----------------------------
 if __name__ == "__main__":
-    # Run the app with: python main.py
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

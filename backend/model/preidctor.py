@@ -1,20 +1,25 @@
+import os
 import joblib
 import yfinance as yf
-import model_trainer as gyatt
 import pandas as pd
 from datetime import date
-from backend.model.model_trainer import process_dataframe
 import matplotlib.pyplot as plt
+import backend.model.model_trainer as gyatt
+from backend.model.model_trainer import process_dataframe
+
 
 
 # Load the pre-trained model
-model = joblib.load('model.joblib')
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, 'model.joblib')
 
+# Load the pre-trained model using the absolute path.
+model = joblib.load(model_path)
 
 def predictNext(ticker):
      current_date = date.today().strftime('%Y-%m-%d')
      Ydf = process_dataframe(yf.download(ticker, current_date, current_date))
-     model.predict(Ydf)
+     return model.predict(Ydf)
 
 def plotGraph(ticker):
     ticker_data = yf.Ticker(ticker)

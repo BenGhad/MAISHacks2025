@@ -11,7 +11,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, 'model.joblib')
 
 model = joblib.load(model_path)
-
+print("model loaded")
 
 def predictNext(ticker):
     df = yf.download(ticker, period="3mo")

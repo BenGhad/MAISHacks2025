@@ -1,50 +1,132 @@
-from fastapi import FastAPI, Request, Form
+# main.py
+from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+import uvicorn
+import backend.model.model_trainer as model_trainer
+import backend.model.preidctor as skibidi
 
-
-# Import the function 'start' from your preidctor.py module
-# (Make sure that your PYTHONPATH is set appropriately so that 'backend.model.preidctor' is importable)
-import backend.model.preidctor
-import backend.model.model_trainer
 
 app = FastAPI()
 
-# Set up Jinja2 templates; ensure the templates folder is in the same directory as newMain.py.
-templates = Jinja2Templates(directory="templates")
+
+
+def start(startDate: str, endDate: str, tickers: list) -> int:
+    return skibidi.start(startDate, endDate, list)
+
+def next(tickers: list) -> list:
+    buys = []
+    for ticker in tickers:
+        buys.append(skibidi.predictNext(ticker))
+    return buys
+
+
+
 
 @app.get("/", response_class=HTMLResponse)
-async def read_form(request: Request):
-    # Render the form with no result initially.
-    return templates.TemplateResponse("index.html", {"request": request, "result": None})
+async def index():
+    # Initial page with an empty output box.
+    html_content = html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Stock Predictor</title>
+</head>
+<body>
+    <h1>Stock Predictor</h1>
+    
+    <div>
+        <label for="tickersInput">Tickers (space-separated):</label><br>
+        <input type="text" id="tickersInput" placeholder="AAPL TSLA MSFT" style="width:300px;">
+    </div>
+    <br>
+    
+    <div>
+        <label for="startDate">Start Date:</label><br>
+        <input type="date" id="startDate" />
+    </div>
+    <br>
 
-@app.post("/", response_class=HTMLResponse)
-async def process_form(
-    request: Request,
-    start_date: str = Form(...),
-    end_date: str = Form(...),
-    tickers: str = Form(...)
-):
-    # Convert the comma-separated tickers string into a list,
-    # stripping any extra whitespace.
-    tickers_list = [ticker.strip() for ticker in tickers.split(",") if ticker.strip()]
+    <div>
+        <label for="endDate">End Date:</label><br>
+        <input type="date" id="endDate" />
+    </div>
+    <br>
 
-    # Call your 'start' function with the provided dates and tickers.
-    result = start(start_date, end_date, tickers_list)
+    <button onclick="callStart()">Call Start</button>
+    <button onclick="callNext()">Call Next</button>
 
-    # Render the form again, now including the result.
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "result": result,
-            "start_date": start_date,
-            "end_date": end_date,
-            "tickers": tickers,
+    <hr>
+
+    <!-- Output box -->
+    <div id="outputBox" style="border:1px solid #ccc; padding:10px; min-height:50px;">
+        <!-- Results will appear here -->
+    </div>
+
+    <!-- JavaScript to handle button clicks and fetch calls -->
+    <script>
+        async function callStart() {
+            const tickers = document.getElementById("tickersInput").value;
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+
+            try {
+                const response = await fetch("/start", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 
+                        tickers: tickers,
+                        startDate: startDate,
+                        endDate: endDate
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                document.getElementById("outputBox").innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error(error);
+                document.getElementById("outputBox").innerText = "Error: " + error.message;
+            }
         }
-    )
 
-# If running this module directly, use Uvicorn to serve the app.
+        async function callNext() {
+            const tickers = document.getElementById("tickersInput").value;
+
+            try {
+                const response = await fetch("/next", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        tickers: tickers
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                document.getElementById("outputBox").innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error(error);
+                document.getElementById("outputBox").innerText = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
+
+"""
+
+
 if __name__ == "__main__":
-    import uvicorn
+    # Run the app with: python main.py
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

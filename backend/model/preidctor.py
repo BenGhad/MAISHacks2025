@@ -119,12 +119,12 @@ def start(startDate, endDate, tickers):
             portfolio[ticker] = 0.0
 
         for i, row in pdf.iterrows():
-            current_close = float(row['Close'])
+            current_close = float(row['Close'].iloc[0])
             # Model input features
-            ret = float(row['Return'])
-            ma5 = float(row['MA5'])
-            ma20 = float(row['MA20'])
-            vol_change = float(row['Volume_Change'])
+            ret = float(row['Return'].iloc[0])
+            ma5 = float(row['MA5'].iloc[0])
+            ma20 = float(row['MA20'].iloc[0])
+            vol_change = float(row['Volume_Change'].iloc[0])
 
             # Get prediction from the model
             prediction = predictAny(ret, ma5, ma20, vol_change)
@@ -171,14 +171,14 @@ def start(startDate, endDate, tickers):
 
         # After the last day in the range, if still holding, sell everything
         if portfolio[ticker] > 0:
-            last_close = pdf.iloc[-1]['Close']
+            last_close = float(pdf.iloc[-1]['Close'].iloc[0])
             shares_held = portfolio[ticker]
             proceeds = shares_held * last_close
             Profit += proceeds
             portfolio[ticker] = 0.0
 
     print(f"Final Profit after simulation: {Profit:.2f}")
-    return Profit
+    return round(Profit, 2)
 
 
 # Example usage:

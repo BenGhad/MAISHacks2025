@@ -107,7 +107,13 @@ if __name__ == "__main__":
     start_date = "2024-01-01"
     end_date = "2025-01-01"
 
+    count = 0
+    cap =  int(input("How much files to train on?(More is better, but more intensive)"))
+
     for ticker in test_tickers:
+        if count == cap:
+            break
+        count += 1
         #Download da process
         Ydf = yf.download(ticker, start=start_date, end=end_date)
         Ydf.reset_index(inplace=True) # Make date a collumn

@@ -10,115 +10,298 @@ import backend.model.preidctor as skibidi
 
 app = FastAPI(Title="Skibidi Scikit Stock Bot")
 
+
 # ----------------------------
 # Functions
 # ----------------------------
 def start(startDate: str, endDate: str, tickers: list) -> int:
     return skibidi.start(startDate, endDate, tickers)
 
+
 def next_prediction(tickers: list) -> list:
-    return [skibidi.predictNext(ticker) for ticker in tickers]
+    result = ""
+    for ticker in tickers:
+        result += skibidi.predictNext(ticker)
+    return result
+
 
 # ----------------------------
-# HTML content (pure HTML/CSS/JS)
+# Frontend Content(nice particles)
 # ----------------------------
-HTML_content = """
-<!DOCTYPE html>
-<html>
+HTML_content = """<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Stock Predictor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-        }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        label, input, button {
-            display: block;
-            margin: 10px 0px;
-        }
-        #outputBox, #answerBox {
-            margin: 20px 0;
-            border: 1px solid #ccc;
-            min-height: 40px;
-            padding: 10px;
-        }
-        button {
-            cursor: pointer;
-            padding: 8px 16px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Skibidi Scikit Stock Bot</title>
+  <style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #333;
+    }
+
+    /* Particle background container */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: #3D3D3D; /* Dark gray background */
+    }
+
+    /* Header Styling */
+    header {
+      background-color: #1C1C1C;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    header h1 {
+      color: #fff;
+      font-size: 2rem;
+    }
+
+    /* Main Content Layout */
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: calc(100% - 80px); /* Adjust based on header height */
+    }
+
+    /* Content Box (Card) */
+    .content-box {
+      background: #fff;
+      max-width: 900px;
+      width: 100%;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    /* Left Column for Inputs */
+    .input-section {
+      flex: 1;
+      min-width: 280px;
+    }
+    .input-section label {
+      display: block;
+      margin: 15px 0 5px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #555;
+    }
+    .input-section input[type="text"],
+    .input-section input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    /* Right Column for Actions */
+    .action-section {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    .action-block {
+      background: #F8F8F8;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .action-block button {
+      background-color: #1C1C1C;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    .action-block button:hover {
+      background-color: #333;
+    }
+    .action-desc {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: #555;
+    }
+    .result-box {
+      margin-top: 15px;
+      padding: 12px;
+      background: #F2F2F2;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      min-height: 40px;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+
+  <!-- Header -->
+  <header>
     <h1>Stock Predictor</h1>
+  </header>
 
-    <label for="tickersInput">Enter Stocks (space-separated):</label>
-    <input type="text" id="tickersInput" placeholder="e.g. AAPL MSFT GOOG" />
+  <!-- Main Content -->
+  <main>
+    <div class="content-box">
+      <!-- Left Column: Inputs -->
+      <div class="input-section">
+        <label for="tickersInput">Enter Stocks (space-separated):</label>
+        <input type="text" id="tickersInput" placeholder="e.g. AAPL MSFT GOOG" />
 
-    <label for="startDateInput">Start Date:</label>
-    <input type="date" id="startDateInput" />
+        <label for="startDateInput">Start Date:</label>
+        <input type="date" id="startDateInput" />
 
-    <label for="endDateInput">End Date:</label>
-    <input type="date" id="endDateInput" />
+        <label for="endDateInput">End Date:</label>
+        <input type="date" id="endDateInput" />
+      </div>
 
-    <button onclick="handleStart()">Start</button>
-    <div id="outputBox">Output goes here...</div>
+      <!-- Right Column: Action Buttons & Descriptions -->
+      <div class="action-section">
+        <!-- Action Block 1: Daily Prediction -->
+        <div class="action-block">
+          <button onclick="handleDailyPrediction()">Daily Prediction</button>
+          <p class="action-desc">
+            For each ticker and for each day within the selected range, this action sends ticker data to our model. The model predicts whether to buy, sell, or hold, and returns an estimated profit for these tickers.
+          </p>
+          <div id="outputBox" class="result-box">Output goes here...</div>
+        </div>
+        <!-- Action Block 2: Tomorrow Hold Prediction -->
+        <div class="action-block">
+          <button onclick="handleTomorrowPrediction()">Hold Until Tomorrow</button>
+          <p class="action-desc">
+            For each ticker, our model determines if it is advisable to hold until tomorrow. The response is:
+            <br>• 1: Yes
+            <br>• -1: No
+            <br>• 0: Yes if you have a high risk tolerance.
+          </p>
+          <div id="answerBox" class="result-box">Answer goes here...</div>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    <button onclick="handleNext()">Next</button>
-    <div id="answerBox">Answer goes here...</div>
-</div>
+  <!-- JavaScript for Actions -->
+  <script>
+  async function handleDailyPrediction() {
+    const tickers = document.getElementById("tickersInput").value;
+    const startDate = document.getElementById("startDateInput").value;
+    const endDate = document.getElementById("endDateInput").value;
 
-<script>
-    async function handleStart() {
-        const tickers = document.getElementById("tickersInput").value;
-        const startDate = document.getElementById("startDateInput").value;
-        const endDate = document.getElementById("endDateInput").value;
-
-        try {
-            const response = await fetch("/start", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    tickers: tickers,
-                    startDate: startDate,
-                    endDate: endDate
-                })
-            });
-            const data = await response.json();
-            document.getElementById("outputBox").innerText = data.result;
-        } catch (error) {
-            document.getElementById("outputBox").innerText = "Error: " + error;
-        }
+    try {
+      const response = await fetch("/start", {  // Changed from "/daily" to "/start"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tickers, startDate, endDate })
+      });
+      const data = await response.json();
+      document.getElementById("outputBox").innerText = data.result;
+    } catch (error) {
+      document.getElementById("outputBox").innerText = "Error: " + error;
     }
+  }
 
-    async function handleNext() {
-        const tickers = document.getElementById("tickersInput").value;
+  async function handleTomorrowPrediction() {
+    const tickers = document.getElementById("tickersInput").value;
 
-        try {
-            const response = await fetch("/next", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({tickers: tickers})
-            });
-            const data = await response.json();
-            // If it's a list, join the results in some display-friendly way
-            if (Array.isArray(data.result)) {
-                document.getElementById("answerBox").innerText = data.result.join(", ");
-            } else {
-                document.getElementById("answerBox").innerText = data.result;
-            }
-        } catch (error) {
-            document.getElementById("answerBox").innerText = "Error: " + error;
-        }
+    try {
+      const response = await fetch("/next", {  // Changed from "/tomorrow" to "/next"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tickers })
+      });
+      const data = await response.json();
+      if (Array.isArray(data.result)) {
+        document.getElementById("answerBox").innerText = data.result.join(", ");
+      } else {
+        document.getElementById("answerBox").innerText = data.result;
+      }
+    } catch (error) {
+      document.getElementById("answerBox").innerText = "Error: " + error;
     }
+  }
 </script>
+
+
+  <!-- Load particles.js library from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  
+  <!-- Initialize particles.js with configuration -->
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 60,
+          "density": { "enable": true, "value_area": 800 }
+        },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.5, "random": true },
+        "size": { "value": 3, "random": true },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.5,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 2,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out"
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": true, "mode": "repulse" },
+          "resize": true
+        },
+        "modes": {
+          "grab": { "distance": 200, "line_linked": { "opacity": 1 } },
+          "repulse": { "distance": 100, "duration": 0.4 }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
 </body>
 </html>
+
+
 """
+
 
 # ----------------------------
 # Routes
@@ -141,6 +324,7 @@ async def start_endpoint(request: Request):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
+
 @app.post("/next")
 async def next_endpoint(request: Request):
     body = await request.json()
@@ -151,6 +335,7 @@ async def next_endpoint(request: Request):
         return JSONResponse(content={"result": result})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
+
 
 # ----------------------------
 # Run the server

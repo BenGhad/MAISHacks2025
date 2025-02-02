@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 import backend.model.model_trainer as gyatt
 from backend.model.model_trainer import process_dataframe
 
-
-
 # Load the pre-trained model
 current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, 'model.joblib')
@@ -16,10 +14,33 @@ model_path = os.path.join(current_dir, 'model.joblib')
 # Load the pre-trained model using the absolute path.
 model = joblib.load(model_path)
 
+
 def predictNext(ticker):
-     current_date = date.today().strftime('%Y-%m-%d')
-     Ydf = process_dataframe(yf.download(ticker, current_date, current_date))
-     return model.predict(Ydf)
+    df = yf.download(ticker, period="1mo")
+    if (df.empty):
+        return f"{ticker}: No data available"
+    df.reset_index(inplace=True)
+    processed_df = process_dataframe(df)
+    if processed_df.empty:
+        return f"{ticker}: Not enough data available"
+
+    ytd = processed_df.iloc[-1]
+    ret = ytd['Return']
+    ma5 = ytd['MA5']
+    ma20 = ytd['MA20']
+    vol_change = ytd['Volume_Change']
+
+    features = pd.DataFrame([[ret, ma5, ma20, vol_change]],
+                            columns=['Return', 'MA5', 'MA20', 'Volume_Change'])
+    prediction = model.predict(features)[0]
+
+    if prediction > 0:
+        decision = "Yes"
+    elif prediction < 0:
+        decision = "No"
+    else:
+        decision = "YiHRT"
+    return f"{ticker}: {decision}"
 
 def plotGraph(ticker):
     ticker_data = yf.Ticker(ticker)

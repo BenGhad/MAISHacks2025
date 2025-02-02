@@ -3,15 +3,15 @@ from fastapi.responses import HTMLResponse, JSONResponse
 import uvicorn
 
 # ----------------------------
-# Import your trainer/predictor
+# Import trainer/predictor
 # ----------------------------
 import backend.model.model_trainer as model_trainer
 import backend.model.preidctor as skibidi
 
-app = FastAPI()
+app = FastAPI(Title="Skibidi Scikit Stock Bot")
 
 # ----------------------------
-# Wrapper functions
+# Functions
 # ----------------------------
 def start(startDate: str, endDate: str, tickers: list) -> int:
     return skibidi.start(startDate, endDate, tickers)
@@ -124,9 +124,9 @@ HTML_content = """
 # Routes
 # ----------------------------
 @app.get("/", response_class=HTMLResponse)
-def serve_homepage():
-    print("Serving homepage...")
-    return HTML_content
+async def read_home():
+    return HTMLResponse(content=HTML_content, status_code=200)
+
 
 @app.post("/start")
 async def start_endpoint(request: Request):
@@ -156,4 +156,4 @@ async def next_endpoint(request: Request):
 # Run the server
 # ----------------------------
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("newMain:app", host="127.0.0.1", port=8000, reload=True)

@@ -3,5 +3,5 @@ pandas
 fastapi
 uvicorn
 pydantic
-sklearn
+scikit-learn
 matplotlib

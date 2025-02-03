@@ -1,5 +1,9 @@
 [
     {
+        "Title": "Results of our model",
+        "Desc:": "beats inflation on avg"
+    },
+    {
         "Title": "Generic portfolio #1 23-24",
         "Stocks": "AAPL MSFT GOOGL AMZN TSLA NVDA META JPM V VZ NFLX DIS PYPL PEP KO INTC AMD TSM CSCO WMT XOM JNJ UNH PG NKE ABBV MRK BA GE",
         "Start": "01/01/2023",
@@ -47,6 +51,13 @@
         "Start": "01/01/2023",
         "End": "01/01/2025",
         "PCT_Profit": 102.31
+    },
+    {
+        "Title": "I liek apples",
+        "Stocks": "AAPL",
+        "Start": "01/01/2023",
+        "End": "01/01/2024",
+        "PCT_Profit": 108.14
     }
 
 ]

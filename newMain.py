@@ -271,7 +271,6 @@ HTML_content = """<!DOCTYPE html>
 
       // Parse the response
       const data = await response.json();
-      
       if (data.image) {
         document.getElementById("plotBox").src = 'data:image/png;base64,' + data.image;
       }
